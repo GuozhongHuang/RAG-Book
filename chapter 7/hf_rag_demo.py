@@ -1,6 +1,6 @@
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import TextLoader
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_unstructured.document_loaders import UnstructuredLoader
+from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFacePipeline
 from langchain_core.output_parsers import StrOutputParser
@@ -23,14 +23,13 @@ def prepare_embedding_model():
 
 def prepare_llm_model():
     llm = HuggingFacePipeline.from_model_id(
-        model_id="./Qwen2-0.5B-Instruct/",
+        model_id="./Qwen2.5-0.5B-Instruct",
         task="text-generation",
         pipeline_kwargs=dict(
             max_new_tokens=512,
-            do_sample=False,
-            token=False
+            do_sample=False
         ),
-        device=0,
+        device=0
     )
     chat_model = ChatHuggingFace(llm=llm, token=False)
     return chat_model
@@ -42,7 +41,7 @@ hf_embedding = prepare_embedding_model()
 path = "./heishenhua_sub.txt"
 
 def encode_data(path, chunk_size=1000, chunk_overlap=200):
-    loader = TextLoader(path)
+    loader = UnstructuredLoader(path)
     documents = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size, chunk_overlap=chunk_overlap, length_function=len
@@ -56,7 +55,7 @@ chunks_vector_store = encode_data(path, chunk_size=1000, chunk_overlap=200)
 chunks_query_retriever = chunks_vector_store.as_retriever(search_kwargs={"k": 2})
 
 test_query = "白衣秀士攻略"
-docs = chunks_query_retriever.get_relevant_documents(test_query)
+docs = chunks_query_retriever.invoke(test_query)
 context = [doc.page_content for doc in docs]
 
 

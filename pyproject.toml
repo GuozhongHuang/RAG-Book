@@ -1,0 +1,37 @@
+[project]
+name = "rag-book"
+version = "0.1.0"
+requires-python = "==3.12.*"
+dependencies = [
+    "chromadb>=1.5.9",
+    "huggingface-hub>=0.34.0,<1.0",
+    "ipykernel>=7.3.0",
+    "jupyter>=1.1.1",
+    "langchain-community>=0.4.2",
+    "langchain-faiss>=0.1.1",
+    "langchain-huggingface>=1.2.2",
+    "langchain-ollama>=1.1.0",
+    "langchain-openai>=1.6.0",
+    "langchain-text-splitters>=1.1.2",
+    "langchain-unstructured>=1.0.1",
+    # 不要 langchain[all]，它会拉 CPU torch
+    "notebook>=7.6.2",
+    "torch>=2.11.0",
+    "torchvision>=0.26.0",
+    "torchaudio>=2.11.0",
+    "transformers>=4.57.1,<5",
+    "sentence-transformers>=5.7.0",
+    "unstructured>=0.27.5",
+    "faiss-cpu>=1.15.0",
+]
+
+# ====== 关键：把 torch 指向 PyTorch 官方 CUDA 128 索引 ======
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu128", marker = "sys_platform == 'linux' or sys_platform == 'win32'" }]
+torchvision = [{ index = "pytorch-cu128", marker = "sys_platform == 'linux' or sys_platform == 'win32'" }]
+torchaudio = [{ index = "pytorch-cu128", marker = "sys_platform == 'linux' or sys_platform == 'win32'" }]
