@@ -23,6 +23,9 @@ dependencies = [
     "sentence-transformers>=5.7.0",
     "unstructured>=0.27.5",
     "faiss-cpu>=1.15.0",
+    "streamlit>=1.63.0",
+    "streamlit-chat>=0.1.1",
+    "pymupdf>=1.28.2",
 ]
 
 # ====== 关键：把 torch 指向 PyTorch 官方 CUDA 128 索引 ======
